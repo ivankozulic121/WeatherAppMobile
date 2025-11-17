@@ -13,8 +13,13 @@ import { Text } from '@/components/ui/text';
 import { ScrollView, View } from 'react-native';
 import { HourlyForecastSelectPreview } from './hourlyForecastSelectPreview';
 import { HourlyForecastCardPreview } from './hourlyForecastCardPreview';
+import { HourlyWeatherData } from '@/app/types/hourlyWeather';
+
+type HourlyForecastCardPreviewProps = {
+  hourlyWeatherData: HourlyWeatherData
+}
  
-export function HourlyForecastView() {
+export function HourlyForecastView({hourlyWeatherData}: HourlyForecastCardPreviewProps) {
   return (
     <Card className="w-full bg-[#25253f] flex-1 h-50">
       <CardHeader>
@@ -24,15 +29,17 @@ export function HourlyForecastView() {
         </View>
       </CardHeader>
       <CardContent className="flex-col gap-4">
-        
+        {hourlyWeatherData?.time?.map((el, index) => (
+            <HourlyForecastCardPreview key={el} time={el} temperature={hourlyWeatherData?.temperature_2m?.[index]} weatherCode={hourlyWeatherData?.weather_code?.[index]}></HourlyForecastCardPreview>
+        ))}
+          
+          {/* <HourlyForecastCardPreview></HourlyForecastCardPreview>
           <HourlyForecastCardPreview></HourlyForecastCardPreview>
           <HourlyForecastCardPreview></HourlyForecastCardPreview>
           <HourlyForecastCardPreview></HourlyForecastCardPreview>
           <HourlyForecastCardPreview></HourlyForecastCardPreview>
           <HourlyForecastCardPreview></HourlyForecastCardPreview>
-          <HourlyForecastCardPreview></HourlyForecastCardPreview>
-          <HourlyForecastCardPreview></HourlyForecastCardPreview>
-          <HourlyForecastCardPreview></HourlyForecastCardPreview>
+          <HourlyForecastCardPreview></HourlyForecastCardPreview> */}
       </CardContent>
     </Card>
   );

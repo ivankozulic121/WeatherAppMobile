@@ -12,12 +12,20 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Text } from '@/components/ui/text';
 import { Image, View } from 'react-native';
+import { weatherCodes } from '@/app/constants/weatherCodes';
+import { weatherIcons } from '@/app/constants/weatherIcons';
 
 type MainWeatherCardProps = {
-  selectedLocation: Location | undefined
+  selectedLocation: Location | undefined;
+  temperature: number;
+  weatherCode: number;
 }
  
-export function MainWeatherCard({selectedLocation}: MainWeatherCardProps) {
+export function MainWeatherCard({selectedLocation, temperature, weatherCode}: MainWeatherCardProps) {
+
+  const actualWeather = Object.keys(weatherCodes).find( key =>
+    weatherCodes[key].includes(weatherCode)
+  );
   return (
 
         <Card className="w-full max-w-sm bg-transparent outline-none py-12">
@@ -30,8 +38,8 @@ export function MainWeatherCard({selectedLocation}: MainWeatherCardProps) {
       </CardHeader>
       <CardContent>
         <View className="flex-row justify-between items-center mt-2">
-          <Image source={require('@/assets/images/icon_sun.png')} resizeMode="stretch" className='h-24 w-24'/>
-          <Text className="text-8xl">20°</Text>
+          <Image source={weatherIcons[actualWeather ?? 'sunny']} resizeMode="stretch" className='h-24 w-24'/>
+          <Text className="text-8xl">{Math.floor(temperature)}°</Text>
         </View>
       </CardContent>
     </Card>

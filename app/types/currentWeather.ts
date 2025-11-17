@@ -6,4 +6,5 @@ export type CurrentWeatherData = {
   wind_speed_2m: number | null;
   precipitation: number;
   relative_humidity_2m: number;
+  weather_code: number;
 };

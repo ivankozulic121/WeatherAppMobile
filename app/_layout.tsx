@@ -22,7 +22,8 @@ export default function RootLayout() {
     'DM-Sans-Regular': require('../assets/images/fonts/DMSans-Regular.ttf'),
     'DM-Sans-Bold': require('../assets/images/fonts/DMSans-Bold.ttf'),
     'DM-Sans-Italic': require('../assets/images/fonts/DMSans-Italic.ttf'),
-    //'Bricolage Grotesque': require('../assets/fonts/Bricolage-Grotesque.otf')
+    'Bricolage-Grotesque-Regular': require('../assets/images/fonts/BricolageGrotesque-Regular.ttf'),
+    'Bricolage-Grotesque-48pt-Bold': require('../assets/images/fonts/BricolageGrotesque_48pt-Bold.ttf')
   });
 
   useEffect(() => {
