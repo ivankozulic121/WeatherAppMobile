@@ -21,20 +21,32 @@ import { CurrentWeatherData } from './types/currentWeather';
 import { DailyForecastCard } from './components/custom/dailyForecastCard';
 import { HourlyForecastView } from './components/custom/hourlyForecastView/hourlyForecastView';
 import { FullWeatherData } from './types/fullWeather';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { UnitSelectPreview } from './components/custom/unitSelect';
 //import { ScrollView } from 'react-native-virtualized-view'
 
+
+// const [units, setUnits] = useState('')
 
 const LOGO = {
   light: require('@/assets/images/react-native-reusables-light.png'),
   dark: require('@/assets/images/react-native-reusables-dark.png'),
 };
 
-const SCREEN_OPTIONS = {
-  title: '',
-  headerTransparent: true,
-  headerLeft: () => <MainLogoImage/>,
-  headerRight: () => <SelectPreview searchField="false"/>,
-};
+// const SCREEN_OPTIONS = {
+//   title: '',
+//   headerTransparent: true,
+//   headerLeft: () => <MainLogoImage/>,
+//   headerRight: () => <UnitSelectPreview unit={units} onUnitChange={onUnitChange}/>,
+// };
+
+// function onUnitChange(unit: string) {
+//     console.log("UNIT", unit)
+//     setUnits(unit);
+//     return unit;
+//   }
+
+   
 
 const IMAGE_STYLE: ImageStyle = {
   height: 76,
@@ -46,6 +58,29 @@ export default function Screen() {
   const baseUrl = 'https://api.open-meteo.com/v1/forecast'
   const [selectedLocation, setSelectedLocation] = useState<Location | undefined>();
   const [weatherData, setWeatherData] = useState<FullWeatherData | undefined>();
+  const [units, setUnits] = useState('celsius')
+
+  function onUnitChange(unit: string) {
+  console.log("UNIT", unit);
+  setUnits(unit);
+}
+  
+  const screenOptions = {
+  title: '',
+  headerTransparent: true,
+  headerLeft: () => <MainLogoImage />,
+  headerRight: () => (
+    <UnitSelectPreview unit={units} onUnitChange={onUnitChange} />
+  ),
+};
+ 
+  function converter(temperature: number) {
+      if (units === '') return temperature
+      if(units === "Fahrenheit") return (temperature * 1.8) + 32 //ako smo izabrali farenhajt
+      return  (temperature - 32) * 5/9  //ako smo izabrali celzijus
+  }
+
+  
 
    function onSearchPress() {
     console.log("KURCINA!");
@@ -54,7 +89,7 @@ export default function Screen() {
       console.log("JOS VECA!")
     const { latitude, longitude } = selectedLocation;
     
-    axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,apparent_temperature,wind_speed_2m,precipitation,relative_humidity_2m,weather_code&hourly=temperature_2m&forecast_hours=8&daily=temperature_2m_max,temperature_2m_min,weather_code`).then(
+    axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,apparent_temperature,wind_speed_2m,precipitation,relative_humidity_2m,weather_code&hourly=temperature_2m,weather_code&forecast_hours=168&daily=temperature_2m_max,temperature_2m_min,weather_code&temperature_unit=${units.toLowerCase()}`).then(
           ( response: any ) => {
               console.log("CURRENT ", response.data);
               setWeatherData(response.data);
@@ -64,9 +99,10 @@ export default function Screen() {
    }
   return (
     <>
+     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
     <SafeAreaView style={[styles.container, styles.horizontal]}>
-      <Stack.Screen options={SCREEN_OPTIONS} />
+      <Stack.Screen options={screenOptions} />
 
       <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -77,13 +113,14 @@ export default function Screen() {
         
         <SelectPreview searchField="true" onSelectLocation={setSelectedLocation}></SelectPreview>
         <SearchButton onPress={onSearchPress}></SearchButton>
-        <ScrollView className="grid grid-col-3" style={styles.scrollView}>
+        { weatherData && 
+        (<ScrollView className="grid grid-col-3" style={styles.scrollView}>
          <ImageBackground
         source={require('@/assets/images/bg-today-small-converted-from-svg.png')}
         resizeMode="contain"
         style={styles.image}
       >
-        <MainWeatherCard selectedLocation={selectedLocation} temperature={weatherData?.current.temperature_2m} weatherCode={weatherData?.current.weather_code}></MainWeatherCard>
+        <MainWeatherCard selectedLocation={selectedLocation} temperature={converter(weatherData?.current.temperature_2m)} weatherCode={weatherData?.current.weather_code}></MainWeatherCard>
         </ImageBackground>
         <View className="flex-row justify-between flex-wrap mb-8">
           <StatsCard text="Feels like" value={weatherData?.current.apparent_temperature}></StatsCard>
@@ -101,8 +138,9 @@ export default function Screen() {
           
         </View>
        
-        <HourlyForecastView hourlyWeatherData={weatherData?.hourly}></HourlyForecastView>
-        </ScrollView>
+       { weatherData &&  (<HourlyForecastView hourlyWeatherData={weatherData?.hourly} days={weatherData?.daily?.time}></HourlyForecastView>) }
+        </ScrollView> )
+        }
       </View>
     
       
@@ -110,6 +148,7 @@ export default function Screen() {
       
       </SafeAreaView>
       </SafeAreaProvider>
+      </GestureHandlerRootView>
     </>
   );
 }

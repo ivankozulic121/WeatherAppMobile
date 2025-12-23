@@ -19,10 +19,11 @@ type MainWeatherCardProps = {
   selectedLocation: Location | undefined;
   temperature: number;
   weatherCode: number;
+  
 }
  
 export function MainWeatherCard({selectedLocation, temperature, weatherCode}: MainWeatherCardProps) {
-
+ 
   const actualWeather = Object.keys(weatherCodes).find( key =>
     weatherCodes[key].includes(weatherCode)
   );
@@ -32,14 +33,14 @@ export function MainWeatherCard({selectedLocation, temperature, weatherCode}: Ma
         
       <CardHeader className="flex-col gap-2 items-center">
 
-          <CardTitle className="text-3xl text-center">{selectedLocation?.name }, {selectedLocation?.country}</CardTitle>
-          <CardDescription>Sunday, Nov 5, 2025</CardDescription>
+          <CardTitle className="text-3xl text-center font-dmsans-bold">{selectedLocation?.name }, {selectedLocation?.country}</CardTitle>
+          <CardDescription className="font-dmsans">Sunday, Nov 5, 2025</CardDescription>
         
       </CardHeader>
       <CardContent>
         <View className="flex-row justify-between items-center mt-2">
           <Image source={weatherIcons[actualWeather ?? 'sunny']} resizeMode="stretch" className='h-24 w-24'/>
-          <Text className="text-8xl">{Math.floor(temperature)}°</Text>
+          <Text className="text-8xl font-dmsans-italic">{Math.floor(temperature)}°</Text>
         </View>
       </CardContent>
     </Card>

@@ -76,6 +76,8 @@ function onSelectedItem(unit: Location) {
         { searchField !== "true" ?
      ( <SelectTrigger ref={ref} className="w-[180px]" onTouchStart={onTouchStart}>
 
+        <SelectValue placeholder="Units" />
+  
       </SelectTrigger> )
 
             : ( <SelectTrigger searchField={searchField} ref={ref} className="w-full" onTouchStart={onTouchStart}>
