@@ -11,7 +11,6 @@ import { SelectPreview } from './components/custom/selectUnitDropdown';
 import { SearchField } from './components/custom/searchField';
 import { SearchButton } from './components/custom/searchButton';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-//import { ScrollView } from 'react-native-reanimated/lib/typescript/Animated';
 import { StatsCard } from './components/custom/statsCard';
 import { SearchComponent } from './components/custom/searchComponent';
 import { useState } from 'react';
@@ -23,47 +22,14 @@ import { HourlyForecastView } from './components/custom/hourlyForecastView/hourl
 import { FullWeatherData } from './types/fullWeather';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { UnitSelectPreview } from './components/custom/unitSelect';
-//import { ScrollView } from 'react-native-virtualized-view'
-
-
-// const [units, setUnits] = useState('')
-
-const LOGO = {
-  light: require('@/assets/images/react-native-reusables-light.png'),
-  dark: require('@/assets/images/react-native-reusables-dark.png'),
-};
-
-// const SCREEN_OPTIONS = {
-//   title: '',
-//   headerTransparent: true,
-//   headerLeft: () => <MainLogoImage/>,
-//   headerRight: () => <UnitSelectPreview unit={units} onUnitChange={onUnitChange}/>,
-// };
-
-// function onUnitChange(unit: string) {
-//     console.log("UNIT", unit)
-//     setUnits(unit);
-//     return unit;
-//   }
-
-   
-
-const IMAGE_STYLE: ImageStyle = {
-  height: 76,
-  width: 76,
-};
 
 export default function Screen() {
-  const { colorScheme } = useColorScheme();
-  const baseUrl = 'https://api.open-meteo.com/v1/forecast'
+
   const [selectedLocation, setSelectedLocation] = useState<Location | undefined>();
   const [weatherData, setWeatherData] = useState<FullWeatherData | undefined>();
   const [units, setUnits] = useState('Celsius')
 
-  function onUnitChange(unit: string) {
-  console.log("UNIT", unit);
-  setUnits(unit);
-}
+  const onUnitChange = (unit: string) => setUnits(unit);
   
   const screenOptions = {
   title: '',
@@ -74,31 +40,22 @@ export default function Screen() {
   ),
 };
  
-  // function converter(temperature: number) {
-      
-  //      return (temperature * 1.8) + 32 //ako smo izabrali farenhajt
-  //       //ako smo izabrali celzijus
-  // }
-
   const converter = (temperature: number) => (temperature * 1.8 ) + 32
 
-  
+  function onSearchPress() {
 
-   function onSearchPress() {
-    console.log("KURCINA!");
-      
-    if (selectedLocation){
-      console.log("JOS VECA!")
+    if (selectedLocation) {
+    
     const { latitude, longitude } = selectedLocation;
     
     axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,apparent_temperature,wind_speed_2m,precipitation,relative_humidity_2m,weather_code&hourly=temperature_2m,weather_code&forecast_hours=168&daily=temperature_2m_max,temperature_2m_min,weather_code`).then(
           ( response: any ) => {
-              console.log("CURRENT ", response.data);
               setWeatherData(response.data);
           }
       )
   }
    }
+
   return (
     <>
      <GestureHandlerRootView style={{ flex: 1 }}>
