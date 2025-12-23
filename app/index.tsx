@@ -58,7 +58,7 @@ export default function Screen() {
   const baseUrl = 'https://api.open-meteo.com/v1/forecast'
   const [selectedLocation, setSelectedLocation] = useState<Location | undefined>();
   const [weatherData, setWeatherData] = useState<FullWeatherData | undefined>();
-  const [units, setUnits] = useState('celsius')
+  const [units, setUnits] = useState('Celsius')
 
   function onUnitChange(unit: string) {
   console.log("UNIT", unit);
@@ -74,11 +74,13 @@ export default function Screen() {
   ),
 };
  
-  function converter(temperature: number) {
-      if (units === '') return temperature
-      if(units === "Fahrenheit") return (temperature * 1.8) + 32 //ako smo izabrali farenhajt
-      return  (temperature - 32) * 5/9  //ako smo izabrali celzijus
-  }
+  // function converter(temperature: number) {
+      
+  //      return (temperature * 1.8) + 32 //ako smo izabrali farenhajt
+  //       //ako smo izabrali celzijus
+  // }
+
+  const converter = (temperature: number) => (temperature * 1.8 ) + 32
 
   
 
@@ -89,7 +91,7 @@ export default function Screen() {
       console.log("JOS VECA!")
     const { latitude, longitude } = selectedLocation;
     
-    axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,apparent_temperature,wind_speed_2m,precipitation,relative_humidity_2m,weather_code&hourly=temperature_2m,weather_code&forecast_hours=168&daily=temperature_2m_max,temperature_2m_min,weather_code&temperature_unit=${units.toLowerCase()}`).then(
+    axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,apparent_temperature,wind_speed_2m,precipitation,relative_humidity_2m,weather_code&hourly=temperature_2m,weather_code&forecast_hours=168&daily=temperature_2m_max,temperature_2m_min,weather_code`).then(
           ( response: any ) => {
               console.log("CURRENT ", response.data);
               setWeatherData(response.data);
@@ -120,7 +122,7 @@ export default function Screen() {
         resizeMode="contain"
         style={styles.image}
       >
-        <MainWeatherCard selectedLocation={selectedLocation} temperature={converter(weatherData?.current.temperature_2m)} weatherCode={weatherData?.current.weather_code}></MainWeatherCard>
+        <MainWeatherCard selectedLocation={selectedLocation} temperature={units ==='Celsius' ? weatherData?.current.temperature_2m : converter(weatherData?.current.temperature_2m)} weatherCode={weatherData?.current.weather_code}></MainWeatherCard>
         </ImageBackground>
         <View className="flex-row justify-between flex-wrap mb-8">
           <StatsCard text="Feels like" value={weatherData?.current.apparent_temperature}></StatsCard>
@@ -133,7 +135,7 @@ export default function Screen() {
           
         { 
         weatherData?.daily.time.map((el, index) => (
-          <DailyForecastCard key={el} day={el} minTemp={weatherData?.daily.temperature_2m_min[index]} maxTemp={weatherData?.daily.temperature_2m_max[index]}  weatherCode={weatherData?.daily.weather_code[index]}></DailyForecastCard>
+          <DailyForecastCard key={el} day={el} minTemp={units === 'Celsius' ? weatherData?.daily.temperature_2m_min[index] : converter(weatherData?.daily.temperature_2m_min[index])} maxTemp={units === 'Celsius' ? weatherData?.daily.temperature_2m_max[index] : converter(weatherData?.daily.temperature_2m_max[index])}  weatherCode={weatherData?.daily.weather_code[index]}></DailyForecastCard>
         ))}
           
         </View>
