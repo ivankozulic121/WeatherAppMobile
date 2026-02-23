@@ -68,7 +68,8 @@ export function SelectPreview({searchField, onSelectLocation}: SelectPreviewProp
 function onSelectedItem(unit: Location) {
   setSearchValue(unit.name);
   setSelectedLocation(unit);
-
+  console.log("ALOOOO", unit);
+  
   onSelectLocation?.(unit); 
 }
   return (
@@ -88,7 +89,7 @@ function onSelectedItem(unit: Location) {
            <NativeSelectScrollView>
           {data
     .map((unit) => (
-      <SelectItem onPress={() => onSelectedItem(unit)} key={unit.id} label={unit.name} value={unit.name}>
+      <SelectItem onPress={() => onSelectedItem(unit)} key={unit.id} label={`${unit.name}, ${unit.country}`} value={unit.name}>
         {unit.name}
       </SelectItem>
     ))}
