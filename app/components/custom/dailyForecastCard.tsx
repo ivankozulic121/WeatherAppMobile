@@ -10,7 +10,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Text } from '@/components/ui/text';
-import { Image, View } from 'react-native';
+import { Image, View, ImageBackground, StyleSheet } from 'react-native';
 import { weatherIcons } from '@/app/constants/weatherIcons';
 import { weatherCodes } from '@/app/constants/weatherCodes';
 
@@ -29,10 +29,15 @@ export function DailyForecastCard({minTemp, maxTemp, day, weatherCode}: DailyFor
   )
 
   return (
-    <Card className="w-[30%] bg-[#25253f] mt-4 py-4 flex">
+    <Card className="w-[30%] rounded-xl  overflow-hidden bg-[#25253f] mt-4 py-4 flex">
+         <ImageBackground
+        source={require('@/assets/images/bg-today-2.png')}
+        resizeMode="cover"
+        style={StyleSheet.absoluteFill}
+      />
       <CardHeader className="flex-row">
         <View className="flex-1 gap-1.5">
-          <CardTitle className="text-center">{dayName}</CardTitle>
+          <CardTitle className="text-center text-white">{dayName}</CardTitle>
         </View>
       </CardHeader>
       <CardContent>
@@ -41,9 +46,10 @@ export function DailyForecastCard({minTemp, maxTemp, day, weatherCode}: DailyFor
         </View>
       </CardContent>
       <CardFooter className="flex-row justify-between gap-2">
-        <Text>{Math.floor(maxTemp)}°</Text>
-        <Text>{Math.floor(minTemp)}°</Text>
+        <Text className='text-white'>{Math.floor(maxTemp)}°</Text>
+        <Text className='text-white'>{Math.floor(minTemp)}°</Text>
       </CardFooter>
+      <ImageBackground />
     </Card>
   );
 }

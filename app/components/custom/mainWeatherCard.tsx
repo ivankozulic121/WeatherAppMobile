@@ -27,20 +27,28 @@ export function MainWeatherCard({selectedLocation, temperature, weatherCode}: Ma
   const actualWeather = Object.keys(weatherCodes).find( key =>
     weatherCodes[key].includes(weatherCode)
   );
+    const options = {
+      weekday: 'long',
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    };
+    
+    const formatted = new Date().toLocaleDateString('en-US', options);
   return (
 
         <Card className="w-full max-w-sm bg-transparent outline-none py-12">
         
       <CardHeader className="flex-col gap-2 items-center">
 
-          <CardTitle className="text-3xl text-center font-dmsans-bold">{selectedLocation?.name }, {selectedLocation?.country}</CardTitle>
-          <CardDescription className="font-dmsans">Sunday, Nov 5, 2025</CardDescription>
+          <CardTitle className="text-3xl text-center text-white font-dmsans-bold">{selectedLocation?.name }, {selectedLocation?.country}</CardTitle>
+          <CardDescription className="font-dmsans text-gray-400">{formatted}</CardDescription>
         
       </CardHeader>
       <CardContent>
         <View className="flex-row justify-between items-center mt-2">
           <Image source={weatherIcons[actualWeather ?? 'sunny']} resizeMode="stretch" className='h-24 w-24'/>
-          <Text className="text-8xl font-dmsans-italic">{Math.floor(temperature)}°</Text>
+          <Text className="text-8xl text-white font-dmsans-italic overflow-visible pr-2" style={{ lineHeight: 110 }}>{Math.floor(temperature)}°</Text>
         </View>
       </CardContent>
     </Card>

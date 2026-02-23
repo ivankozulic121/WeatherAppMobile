@@ -38,7 +38,7 @@ export function HourlyForecastCardPreview({time, temperature, weatherCode}: Hour
 
   console.log("ACTUAL ", actualWeather)
   return (
-    <Card className="w-full max-w-sm bg-[#2f2f49] py-4 border border-[#3b3a5d] mb-2">
+    <Card className="w-full max-w-sm bg-gray-200 py-4 border border-[#3b3a5d] mb-2">
       <CardContent>
         <View className="w-full flex-row items-center justify-between gap-2">
           <View className="flex-row justify-between items-center gap-2">

@@ -32,7 +32,7 @@ onSelectLocation?: (location: Location) => void;
 
 
 export function SelectPreview({searchField, onSelectLocation}: SelectPreviewProps) {
-  const [ searchValue, setSearchValue] = useState('sss');
+  const [ searchValue, setSearchValue] = useState('');
   const [filteredUnits, setFilteredUnits] = useState(units);
   const [data, setData] = useState<Location[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<Location>();
@@ -66,10 +66,10 @@ export function SelectPreview({searchField, onSelectLocation}: SelectPreviewProp
 }
 
 function onSelectedItem(unit: Location) {
-    console.log("SELECTED ", unit.name)
-    setSearchValue(unit.name);
-    setSelectedLocation(unit);
-    onSelectLocation?.(unit);
+  setSearchValue(unit.name);
+  setSelectedLocation(unit);
+
+  onSelectLocation?.(unit); 
 }
   return (
     <Select>
@@ -83,7 +83,7 @@ function onSelectedItem(unit: Location) {
             : ( <SelectTrigger searchField={searchField} ref={ref} className="w-full" onTouchStart={onTouchStart}>
                 <SearchField value={searchValue} onChange={onInputChange}></SearchField> 
                 </SelectTrigger>) }
-      <SelectContent side="bottom" sideOffset={searchField==="true" ? 0 : 100} className="w-[98%]">
+  {data.length > 0 &&    <SelectContent side="bottom" sideOffset={searchField==="true" ? 0 : 100} className="w-[98%]">
         <SelectGroup>
            <NativeSelectScrollView>
           {data
@@ -94,7 +94,7 @@ function onSelectedItem(unit: Location) {
     ))}
         </NativeSelectScrollView>
         </SelectGroup>
-      </SelectContent>
+      </SelectContent>}
     </Select>
   );
 }

@@ -33,28 +33,28 @@ export default function Screen() {
   
   const screenOptions = {
   title: '',
-  headerTransparent: true,
-  headerLeft: () => <MainLogoImage />,
-  headerRight: () => (
-    <UnitSelectPreview unit={units} onUnitChange={onUnitChange} />
-  ),
+  headerTransparent: false,
+  headerLeft: () => <Logo />,
+ 
 };
  
   const converter = (temperature: number) => (temperature * 1.8 ) + 32
 
-  function onSearchPress() {
-
-    if (selectedLocation) {
-    
-    const { latitude, longitude } = selectedLocation;
-    
-    axios.get(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,apparent_temperature,wind_speed_2m,precipitation,relative_humidity_2m,weather_code&hourly=temperature_2m,weather_code&forecast_hours=168&daily=temperature_2m_max,temperature_2m_min,weather_code`).then(
-          ( response: any ) => {
-              setWeatherData(response.data);
-          }
-      )
+  function handleLocationSelect(location: Location) {
+    setSelectedLocation(location);
+  
+    const { latitude, longitude } = location;
+  
+    axios.get(
+      `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,apparent_temperature,wind_speed_2m,precipitation,relative_humidity_2m,weather_code&hourly=temperature_2m,weather_code&forecast_hours=168&daily=temperature_2m_max,temperature_2m_min,weather_code`
+    ).then((response: any) => {
+      setWeatherData(response.data);
+    });
   }
-   }
+
+
+   console.log(weatherData);
+   
 
   return (
     <>
@@ -66,40 +66,43 @@ export default function Screen() {
       <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}>
-      <View className="flex-col flex-1 items-center justify-center gap-4 pt-32 px-4 py-4 bg-[#02012b]">
-
-        <Text style={{fontFamily: 'Bricolage-Grotesque-48pt-Bold', fontSize: 64, lineHeight: 72, textAlign: "center"}}>How's the sky looking today?</Text>
         
-        <SelectPreview searchField="true" onSelectLocation={setSelectedLocation}></SelectPreview>
-        <SearchButton onPress={onSearchPress}></SearchButton>
-        { weatherData && 
-        (<ScrollView className="grid grid-col-3" style={styles.scrollView}>
-         <ImageBackground
-        source={require('@/assets/images/bg-today-small-converted-from-svg.png')}
-        resizeMode="contain"
-        style={styles.image}
-      >
-        <MainWeatherCard selectedLocation={selectedLocation} temperature={units ==='Celsius' ? weatherData?.current.temperature_2m : converter(weatherData?.current.temperature_2m)} weatherCode={weatherData?.current.weather_code}></MainWeatherCard>
-        </ImageBackground>
-        <View className="flex-row justify-between flex-wrap mb-8">
-          <StatsCard text="Feels like" value={weatherData?.current.apparent_temperature}></StatsCard>
-          <StatsCard text="Humidity" value={weatherData?.current.relative_humidity_2m}></StatsCard>
-          <StatsCard text="Wind" value={weatherData?.current.wind_speed_2m}></StatsCard>
-          <StatsCard text="Precipitation" value={weatherData?.current.precipitation}></StatsCard>
-        </View>
-        <Text className='text-xl font-bold'>Daily Forecast</Text>
-        <View className="flex-row justify-between flex-wrap mt-2">
+        <View className='flex-1 flex flex-col bg-[#02012b]'>
+          <UnitSelectPreview unit={units} onUnitChange={onUnitChange} />
+        <View className="flex-col flex-1 items-center pt-10 gap-4  px-4 py-4 ">
           
-        { 
-        weatherData?.daily.time.map((el, index) => (
-          <DailyForecastCard key={el} day={el} minTemp={units === 'Celsius' ? weatherData?.daily.temperature_2m_min[index] : converter(weatherData?.daily.temperature_2m_min[index])} maxTemp={units === 'Celsius' ? weatherData?.daily.temperature_2m_max[index] : converter(weatherData?.daily.temperature_2m_max[index])}  weatherCode={weatherData?.daily.weather_code[index]}></DailyForecastCard>
-        ))}
+          <Text style={{fontFamily: 'Bricolage-Grotesque-48pt-Bold', fontSize: 42, lineHeight: 56, textAlign: "center", color: '#fff'}}>How's the sky looking today?</Text>
           
+          <SelectPreview searchField="true" onSelectLocation={handleLocationSelect}></SelectPreview>
+          { weatherData && 
+          (<ScrollView className="grid grid-col-3" style={styles.scrollView}>
+          <ImageBackground
+          source={require('@/assets/images/bg-today-small-converted-from-svg.png')}
+          resizeMode="contain"
+          style={styles.image}
+          >
+          <MainWeatherCard selectedLocation={selectedLocation} temperature={units ==='Celsius' ? weatherData?.current.temperature_2m : converter(weatherData?.current.temperature_2m)} weatherCode={weatherData?.current.weather_code}></MainWeatherCard>
+          </ImageBackground>
+          <View className="flex-row justify-between flex-wrap mb-8">
+            <StatsCard text="Feels like" value={weatherData?.current.apparent_temperature}></StatsCard>
+            <StatsCard text="Humidity" value={weatherData?.current.relative_humidity_2m}></StatsCard>
+            <StatsCard text="Wind" value={weatherData?.current.wind_speed_2m}></StatsCard>
+            <StatsCard text="Precipitation" value={weatherData?.current.precipitation}></StatsCard>
+          </View>
+          <Text className='text-xl font-bold'>Daily Forecast</Text>
+          <View className="flex-row justify-between flex-wrap mt-2">
+            
+          { 
+          weatherData?.daily.time.map((el, index) => (
+            <DailyForecastCard key={el} day={el} minTemp={units === 'Celsius' ? weatherData?.daily.temperature_2m_min[index] : converter(weatherData?.daily.temperature_2m_min[index])} maxTemp={units === 'Celsius' ? weatherData?.daily.temperature_2m_max[index] : converter(weatherData?.daily.temperature_2m_max[index])}  weatherCode={weatherData?.daily.weather_code[index]}></DailyForecastCard>
+          ))}
+            
+          </View>
+        
+        { weatherData &&  (<HourlyForecastView hourlyWeatherData={weatherData?.hourly} days={weatherData?.daily?.time}></HourlyForecastView>) }
+          </ScrollView> )
+          }
         </View>
-       
-       { weatherData &&  (<HourlyForecastView hourlyWeatherData={weatherData?.hourly} days={weatherData?.daily?.time}></HourlyForecastView>) }
-        </ScrollView> )
-        }
       </View>
     
       
@@ -141,7 +144,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     height:25,
-    width: 120
+    width: 25
   },
   scrollView :{
     
@@ -150,11 +153,15 @@ const styles = StyleSheet.create({
 
 }});
 
-function MainLogoImage() {
+function Logo() {
   return (
     /*<View style={styles.logo}>*/
-    <Image source={require('../assets/images/logoWeatherApp.png')} resizeMode='stretch' style={styles.logo}/>
-   /* </View>*/
+    <View className='w-40 pl-2 flex flex-row items-center gap-2'>
+
+    <Image source={require('../assets/images/logoWeatherApp1.png')} style={{...styles.logo}}/>
+    <Text className='font-bold text-lg opacity-90'>Weather App</Text>
+    </View>
+
   )
 }
 

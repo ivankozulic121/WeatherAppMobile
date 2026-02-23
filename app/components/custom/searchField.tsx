@@ -9,7 +9,7 @@ export function SearchField({ value, onChange }: SearchFieldProps ) {
   return (
     <Input
     style={{backgroundColor: '#25253f'}}
-    className="text-[#bfbecd] bg-[#red] w-full h-12 rounded-xl"
+    className="text-[#bfbecd] bg-[#red] w-full h-12 rounded-xl placeholder:text-white"
       keyboardType="email-address"
       textContentType="emailAddress"
       autoComplete="email"

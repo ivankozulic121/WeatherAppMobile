@@ -10,7 +10,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Text } from '@/components/ui/text';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, View, ImageBackground, StyleSheet } from 'react-native';
 import { HourlyForecastSelectPreview } from './hourlyForecastSelectPreview';
 import { HourlyForecastCardPreview } from './hourlyForecastCardPreview';
 import { HourlyWeatherData } from '@/app/types/hourlyWeather';
@@ -28,10 +28,17 @@ export function HourlyForecastView({hourlyWeatherData, days}: HourlyForecastCard
   console.log("HOURLY WEATHER DATA ",hourlyWeatherData );
   console.log("DEJZZ ", days);
   return (
-    <Card className="w-full bg-[#25253f] flex-1 h-50">
+    <Card className="w-full bg-[#25253f] mt-4  flex-1 h-50">
+      <View style={styles.backgroundWrapper}>
+          <ImageBackground
+        source={require('@/assets/images/bg-today-2.png')}
+        resizeMode="cover"
+        style={StyleSheet.absoluteFill}
+      />
+</View>
       <CardHeader>
         <View className="flex-1 flex-row justify-between items-center gap-1.5">
-          <Text>Hourly Forecast</Text>
+          <Text className='text-white'>Hourly Forecast</Text>
           <HourlyForecastSelectPreview selectedDay={selectedDay} onSelectedDay={setSelectedDay} days={days}></HourlyForecastSelectPreview>
         </View>
       </CardHeader>
@@ -51,6 +58,15 @@ export function HourlyForecastView({hourlyWeatherData, days}: HourlyForecastCard
           <HourlyForecastCardPreview></HourlyForecastCardPreview>
           <HourlyForecastCardPreview></HourlyForecastCardPreview> */}
       </CardContent>
+      <ImageBackground />
     </Card>
   );
 }
+
+const styles  = StyleSheet.create( {
+  backgroundWrapper: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 16,
+    overflow: 'hidden',
+  }
+})

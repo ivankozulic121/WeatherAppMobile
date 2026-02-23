@@ -25,7 +25,7 @@ const units = [
 ];
  
 export function SearchComponent() {
-    const [ searchValue, setSearchValue] = useState('sss');
+    const [ searchValue, setSearchValue] = useState('');
       const [filteredUnits, setFilteredUnits] = useState(units)
   const insets = useSafeAreaInsets();
   const contentInsets = {
